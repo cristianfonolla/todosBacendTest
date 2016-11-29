@@ -13,7 +13,25 @@ class TaskControllerTest extends TestCase
 
     use DatabaseMigrations;
 
-        /**
+    /**
+     * TaskControllerTest constructor.
+     */
+    public function __construct()
+    {
+
+        $this->mock = Mockery::mock('GuzzleHttp\Client');
+
+    }
+
+    public function tearDown()
+    {
+
+        Mockery::close();
+
+    }
+
+
+    /**
      * @return mixed
      */
     public function createApplication()
@@ -39,6 +57,15 @@ class TaskControllerTest extends TestCase
         //Execute
         //Comprovaci/Assercions
         $this->login();
+
+        $this->mock
+             ->shouldReceive('request')
+             ->once()
+             ->andReturn('foo');
+
+        $this->app->instance('GuzzleHttp\Client',$this->mock);
+
+
 
         $response = $this->call('GET', '/tasks');
 
